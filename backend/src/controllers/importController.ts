@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import fs from "fs";
 
 import { parseCSV } from "../services/csvService.js";
 import { mapCRMFields } from "../services/geminiService.js";
@@ -16,12 +17,16 @@ export const importCSV = async (
       });
     }
 
-    // For development, process only first 5 records
-    const csvRecords = (await parseCSV(req.file.path)).slice(0, 5);
+    // Get uploaded file
+    const file = req.file;
+
+    // Parse CSV
+    const csvRecords = await parseCSV(file.path);
 
     console.log(`CSV Records Found: ${csvRecords.length}`);
 
-    const batchSize = 5;
+    // Better batch size for production
+    const batchSize = 50;
 
     let crmRecords: any[] = [];
 
@@ -31,19 +36,26 @@ export const importCSV = async (
       i += batchSize
     ) {
 
-      const batch = csvRecords.slice(
-        i,
-        i + batchSize
-      );
+      const batch = csvRecords.slice(i, i + batchSize);
 
       console.log(
-        `Processing batch ${i / batchSize + 1}`
+        `Processing batch ${i / batchSize + 1} of ${Math.ceil(csvRecords.length / batchSize)}`
       );
 
       const result = await mapCRMFields(batch);
 
       crmRecords.push(...result);
 
+      // Wait 1.5 seconds before next Gemini request
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+    }
+
+    // Delete uploaded CSV after processing
+    try {
+      fs.unlinkSync(file.path);
+      console.log("Uploaded CSV deleted.");
+    } catch (err) {
+      console.error("Failed to delete uploaded file:", err);
     }
 
     return res.status(200).json({
@@ -54,8 +66,7 @@ export const importCSV = async (
 
       imported: crmRecords.length,
 
-      skipped:
-        csvRecords.length - crmRecords.length,
+      skipped: csvRecords.length - crmRecords.length,
 
       records: crmRecords,
 

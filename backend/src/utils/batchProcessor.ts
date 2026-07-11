@@ -1,6 +1,6 @@
 export function createBatches<T>(
   records: T[],
-  batchSize: number = 5
+  batchSize: number = 50
 ): T[][] {
   const batches: T[][] = [];
 
