@@ -1,0 +1,12 @@
+export function createBatches<T>(
+  records: T[],
+  batchSize: number = 5
+): T[][] {
+  const batches: T[][] = [];
+
+  for (let i = 0; i < records.length; i += batchSize) {
+    batches.push(records.slice(i, i + batchSize));
+  }
+
+  return batches;
+}

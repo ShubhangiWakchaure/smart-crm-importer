@@ -1,0 +1,25 @@
+# Node modules
+backend/node_modules
+frontend/node_modules
+
+# Environment files
+backend/.env
+frontend/.env
+.env
+
+# Upload folder
+backend/uploads
+
+# Next.js build
+frontend/.next
+
+# Build folders
+dist
+build
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
