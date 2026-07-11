@@ -147,6 +147,11 @@ http://localhost:3000
 - Support larger CSV files with streaming
 
 ---
+## Known Limitations
+
+- The application uses the free Google Gemini API.
+- Very large CSV files may be affected by Gemini API rate limits or quota restrictions.
+- Batch processing and retry logic are implemented to improve reliability.
 
 ## Author
 
