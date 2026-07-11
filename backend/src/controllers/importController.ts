@@ -25,7 +25,7 @@ export const importCSV = async (
 
     console.log(`CSV Records Found: ${csvRecords.length}`);
 
-    // Better batch size for production
+    
     const batchSize = 50;
 
     let crmRecords: any[] = [];
