@@ -8,13 +8,13 @@ export async function uploadCSV(
 
   formData.append("file", file);
 
-  const response = await fetch(
-    "http://localhost:5000/api/import",
-    {
-      method: "POST",
-      body: formData,
-    }
-  );
+ const response = await fetch(
+  `${process.env.NEXT_PUBLIC_API_URL}/api/import`,
+  {
+    method: "POST",
+    body: formData,
+  }
+);
 
   if (!response.ok) {
     throw new Error("Upload failed");
